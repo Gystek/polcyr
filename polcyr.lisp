@@ -71,7 +71,7 @@
 	 :documentation "Whether or not the letter's sound is soft."))
   (:documentation "The class serving as an IR for latin -> cyrillic transliteration."))
 
-(defun process-next-soft-vowel (s default push-default)
+(defun process-next-soft-vowel (s default push-default &optional keep-case)
   (if (null s)
       (cons (list default) s)
       (let* ((nx (car s))
@@ -83,11 +83,11 @@
 	    (if push-default
 		(list default
 		      (make-instance 'abstract-letter
-				     :up up
+				     :up (if keep-case (uppercase default) up)
 				     :sound nx
 				     :soft t))
 		(list (make-instance 'abstract-letter
-				     :up up
+				     :up (if keep-case (uppercase default) up)
 				     :sound nx
 				     :soft t)))
 	    (cdr s)))
@@ -300,7 +300,8 @@
 							   :up up
 							   :sound #\j
 							   :soft t)
-					    nil)
+					    nil
+					    t)
 		 (append pr (analyse-list cd))))
 	  (otherwise (cons ch (analyse-list (cdr s))))))))
 
